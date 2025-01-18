@@ -1,6 +1,7 @@
 # Class Viz
 
-- [Live Visualization](https://echen333.github.io/class_viz/course_prerequisites.html)
+- [Live Math Visualization](https://echen333.github.io/class_viz/network_math.html)
+- [Live CS Visualization](https://echen333.github.io/class_viz/network_cs.html)
 
 ## Requirements
 
