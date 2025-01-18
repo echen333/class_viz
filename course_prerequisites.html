@@ -1,0 +1,265 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": 1113, "label": 1113, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "0399", "label": "0399", "shape": "dot", "size": 10, "title": "MATH 0399 - Support for Precalculus"}, {"color": "#97c2fc", "id": "1501", "label": "1501", "shape": "dot", "size": 10, "title": "MATH 1501 - Calculus I"}, {"color": "#97c2fc", "id": "1711", "label": "1711", "shape": "dot", "size": 10, "title": "MATH 1711 - Finite Mathematics"}, {"color": "#97c2fc", "id": "1712", "label": "1712", "shape": "dot", "size": 10, "title": "MATH 1712 - Survey of Calculus"}, {"color": "#97c2fc", "id": 1111, "label": 1111, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "0999", "label": "0999", "shape": "dot", "size": 10, "title": "MATH 0999 - Support for MATH 1111"}, {"color": "#97c2fc", "id": "1113", "label": "1113", "shape": "dot", "size": 10, "title": "MATH 1113 - Pre-calculus"}, {"color": "#97c2fc", "id": 1501, "label": 1501, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1503", "label": "1503", "shape": "dot", "size": 10, "title": "MATH 1503 - Calculus I For Life Sci"}, {"color": "#97c2fc", "id": "1512", "label": "1512", "shape": "dot", "size": 10, "title": "MATH 1512 - Honors Calculus II"}, {"color": "#97c2fc", "id": "1601", "label": "1601", "shape": "dot", "size": 10, "title": "MATH 1601 - Intro to Higher Math"}, {"color": "#97c2fc", "id": 1503, "label": 1503, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1504", "label": "1504", "shape": "dot", "size": 10, "title": "MATH 1504 - Calculus II For Life Sci"}, {"color": "#97c2fc", "id": 1551, "label": 1551, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1550", "label": "1550", "shape": "dot", "size": 10, "title": "MATH 1550 - Intro to Diff Calculus"}, {"color": "#97c2fc", "id": 1550, "label": 1550, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1551", "label": "1551", "shape": "dot", "size": 10, "title": "MATH 1551 - Differential Calculus"}, {"color": "#97c2fc", "id": 1555, "label": 1555, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1552", "label": "1552", "shape": "dot", "size": 10, "title": "MATH 1552 - Integral Calculus"}, {"color": "#97c2fc", "id": "2603", "label": "2603", "shape": "dot", "size": 10, "title": "MATH 2603 - Intro Discrete Math"}, {"color": "#97c2fc", "id": "4755", "label": "4755", "shape": "dot", "size": 10, "title": "MATH 4755 - Mathematical Biology"}, {"color": "#97c2fc", "id": 1564, "label": 1564, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1553", "label": "1553", "shape": "dot", "size": 10, "title": "MATH 1553 - Intro to Linear Algebra"}, {"color": "#97c2fc", "id": "2106", "label": "2106", "shape": "dot", "size": 10, "title": "MATH 2106 - Foundations Math Proof"}, {"color": "#97c2fc", "id": "2605", "label": "2605", "shape": "dot", "size": 10, "title": "MATH 2605 - Calc III for Comput Sci"}, {"color": "#97c2fc", "id": "3012", "label": "3012", "shape": "dot", "size": 10, "title": "MATH 3012 - Applied Combinatorics"}, {"color": "#97c2fc", "id": "3406", "label": "3406", "shape": "dot", "size": 10, "title": "MATH 3406 - Second Course Linear Alg"}, {"color": "#97c2fc", "id": "4012", "label": "4012", "shape": "dot", "size": 10, "title": "MATH 4012 - Coding Theory"}, {"color": "#97c2fc", "id": "4305", "label": "4305", "shape": "dot", "size": 10, "title": "MATH 4305 - Linear Algebra"}, {"color": "#97c2fc", "id": "4777", "label": "4777", "shape": "dot", "size": 10, "title": "MATH 4777 - Vector\u0026Parallel Sci Comp"}, {"color": "#97c2fc", "id": 1552, "label": 1552, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1554", "label": "1554", "shape": "dot", "size": 10, "title": "MATH 1554 - Linear Algebra"}, {"color": "#97c2fc", "id": 2550, "label": 2550, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1555", "label": "1555", "shape": "dot", "size": 10, "title": "MATH 1555 - Calculus Life Sciences"}, {"color": "#97c2fc", "id": 1554, "label": 1554, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1564", "label": "1564", "shape": "dot", "size": 10, "title": "MATH 1564 - LinAlg w Abstract Vec Sp"}, {"color": "#97c2fc", "id": 1512, "label": 1512, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2406", "label": "2406", "shape": "dot", "size": 10, "title": "MATH 2406 - Abstract Vector Spaces"}, {"color": "#97c2fc", "id": "4580", "label": "4580", "shape": "dot", "size": 10, "title": "MATH 4580 - Linear Programming"}, {"color": "#97c2fc", "id": "6705", "label": "6705", "shape": "dot", "size": 10, "title": "MATH 6705 - Modeling and Dynamics"}, {"color": "#97c2fc", "id": 2605, "label": 2605, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2550", "label": "2550", "shape": "dot", "size": 10, "title": "MATH 2550 - Intro Multivariable Calc"}, {"color": "#97c2fc", "id": "3215", "label": "3215", "shape": "dot", "size": 10, "title": "MATH 3215 - Probability \u0026 Statistics"}, {"color": "#97c2fc", "id": "3670", "label": "3670", "shape": "dot", "size": 10, "title": "MATH 3670 - Statistics and Applns"}, {"color": "#97c2fc", "id": "4320", "label": "4320", "shape": "dot", "size": 10, "title": "MATH 4320 - Complex Analysis"}, {"color": "#97c2fc", "id": "4441", "label": "4441", "shape": "dot", "size": 10, "title": "MATH 4441 - Differential Geometry"}, {"color": "#97c2fc", "id": "4581", "label": "4581", "shape": "dot", "size": 10, "title": "MATH 4581 - Math Methods in Engr"}, {"color": "#97c2fc", "id": "4640", "label": "4640", "shape": "dot", "size": 10, "title": "MATH 4640 - Numerical Analysis I"}, {"color": "#97c2fc", "id": "4782", "label": "4782", "shape": "dot", "size": 10, "title": "MATH 4782 - Quantum Info\u0026Quant Comp"}, {"color": "#97c2fc", "id": "6710", "label": "6710", "shape": "dot", "size": 10, "title": "MATH 6710 - Numerical Methods-CSE I"}, {"color": "#97c2fc", "id": "6711", "label": "6711", "shape": "dot", "size": 10, "title": "MATH 6711 - Numerical Methods-CSE II"}, {"color": "#97c2fc", "id": 2561, "label": 2561, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2551", "label": "2551", "shape": "dot", "size": 10, "title": "MATH 2551 - Multivariable Calculus"}, {"color": "#97c2fc", "id": 2562, "label": 2562, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2552", "label": "2552", "shape": "dot", "size": 10, "title": "MATH 2552 - Differential Equations"}, {"color": "#97c2fc", "id": "4347", "label": "4347", "shape": "dot", "size": 10, "title": "MATH 4347 - Partial Diff Eqns I"}, {"color": "#97c2fc", "id": "4541", "label": "4541", "shape": "dot", "size": 10, "title": "MATH 4541 - Dynamics\u0026 Bifurcations I"}, {"color": "#97c2fc", "id": 2551, "label": 2551, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2561", "label": "2561", "shape": "dot", "size": 10, "title": "MATH 2561 - Honors Multivar Calculus"}, {"color": "#97c2fc", "id": 2552, "label": 2552, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2562", "label": "2562", "shape": "dot", "size": 10, "title": "MATH 2562 - Honors Differential Eqs"}, {"color": "#97c2fc", "id": 3012, "label": 3012, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "3022", "label": "3022", "shape": "dot", "size": 10, "title": "MATH 3022 - Honors App Combinatorics"}, {"color": "#97c2fc", "id": 3215, "label": 3215, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "3225", "label": "3225", "shape": "dot", "size": 10, "title": "MATH 3225 - Honors Prob \u0026 Statistics"}, {"color": "#97c2fc", "id": "3235", "label": "3235", "shape": "dot", "size": 10, "title": "MATH 3235 - Probability Theory"}, {"color": "#97c2fc", "id": 3235, "label": 3235, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "3236", "label": "3236", "shape": "dot", "size": 10, "title": "MATH 3236 - Statistical Theory"}, {"color": "#97c2fc", "id": 3022, "label": 3022, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4022", "label": "4022", "shape": "dot", "size": 10, "title": "MATH 4022 - Intro to Graph Theory"}, {"color": "#97c2fc", "id": "4032", "label": "4032", "shape": "dot", "size": 10, "title": "MATH 4032 - Combinatorial Analysis"}, {"color": "#97c2fc", "id": 2106, "label": 2106, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4107", "label": "4107", "shape": "dot", "size": 10, "title": "MATH 4107 - Abstract Algebra I"}, {"color": "#97c2fc", "id": "4317", "label": "4317", "shape": "dot", "size": 10, "title": "MATH 4317 - Analysis I"}, {"color": "#97c2fc", "id": 4107, "label": 4107, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4108", "label": "4108", "shape": "dot", "size": 10, "title": "MATH 4108 - Abstract Algebra II"}, {"color": "#97c2fc", "id": 2406, "label": 2406, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4150", "label": "4150", "shape": "dot", "size": 10, "title": "MATH 4150 - Intro To Number Theory"}, {"color": "#97c2fc", "id": 3670, "label": 3670, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4210", "label": "4210", "shape": "dot", "size": 10, "title": "MATH 4210 - Mathematics of Data Sci"}, {"color": "#97c2fc", "id": "4221", "label": "4221", "shape": "dot", "size": 10, "title": "MATH 4221 - Stochastic Processes I"}, {"color": "#97c2fc", "id": "4255", "label": "4255", "shape": "dot", "size": 10, "title": "MATH 4255 - Monte Carlo Methods"}, {"color": "#97c2fc", "id": "4261", "label": "4261", "shape": "dot", "size": 10, "title": "MATH 4261 - Math Statistics I"}, {"color": "#97c2fc", "id": "4280", "label": "4280", "shape": "dot", "size": 10, "title": "MATH 4280 - Information Theory"}, {"color": "#97c2fc", "id": 4221, "label": 4221, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4222", "label": "4222", "shape": "dot", "size": 10, "title": "MATH 4222 - Stochastic Processes II"}, {"color": "#97c2fc", "id": "6221", "label": "6221", "shape": "dot", "size": 10, "title": "MATH 6221 - Prob Theory for Sci/Eng"}, {"color": "#97c2fc", "id": 4261, "label": 4261, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4262", "label": "4262", "shape": "dot", "size": 10, "title": "MATH 4262 - Math Statistics II"}, {"color": "#97c2fc", "id": 4317, "label": 4317, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4318", "label": "4318", "shape": "dot", "size": 10, "title": "MATH 4318 - Analysis II"}, {"color": "#97c2fc", "id": "4431", "label": "4431", "shape": "dot", "size": 10, "title": "MATH 4431 - Introduction to Topology"}, {"color": "#97c2fc", "id": "4432", "label": "4432", "shape": "dot", "size": 10, "title": "MATH 4432 - Algebraic Topology"}, {"color": "#97c2fc", "id": "6021", "label": "6021", "shape": "dot", "size": 10, "title": "MATH 6021 - Topology-Euclidean Space"}, {"color": "#97c2fc", "id": "7581", "label": "7581", "shape": "dot", "size": 10, "title": "MATH 7581 - Calculus Variations"}, {"color": "#97c2fc", "id": 4347, "label": 4347, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4348", "label": "4348", "shape": "dot", "size": 10, "title": "MATH 4348 - Partial Diff Eqns II"}, {"color": "#97c2fc", "id": 4541, "label": 4541, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4542", "label": "4542", "shape": "dot", "size": 10, "title": "MATH 4542 - Dynamics\u0026Bifurcations II"}, {"color": "#97c2fc", "id": 4640, "label": 4640, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4641", "label": "4641", "shape": "dot", "size": 10, "title": "MATH 4641 - Numerical Analysis II"}, {"color": "#97c2fc", "id": "6514", "label": "6514", "shape": "dot", "size": 10, "title": "MATH 6514 - Industrial Math I"}, {"color": "#97c2fc", "id": "6640", "label": "6640", "shape": "dot", "size": 10, "title": "MATH 6640 - Num Meth-Part Diff Eqns"}, {"color": "#97c2fc", "id": "6645", "label": "6645", "shape": "dot", "size": 10, "title": "MATH 6645 - Numerical Approx Theory"}, {"color": "#97c2fc", "id": "6646", "label": "6646", "shape": "dot", "size": 10, "title": "MATH 6646 - Numer Meth: Ord Diff Eqn"}, {"color": "#97c2fc", "id": 4022, "label": 4022, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6014", "label": "6014", "shape": "dot", "size": 10, "title": "MATH 6014 - Graph Theory"}, {"color": "#97c2fc", "id": "7016", "label": "7016", "shape": "dot", "size": 10, "title": "MATH 7016 - Combinatorics"}, {"color": "#97c2fc", "id": 4305, "label": 4305, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6112", "label": "6112", "shape": "dot", "size": 10, "title": "MATH 6112 - Advanced Linear Algebra"}, {"color": "#97c2fc", "id": "6121", "label": "6121", "shape": "dot", "size": 10, "title": "MATH 6121 - Algebra I"}, {"color": "#97c2fc", "id": "6643", "label": "6643", "shape": "dot", "size": 10, "title": "MATH 6643 - Numerical Linear Algebra"}, {"color": "#97c2fc", "id": "6701", "label": "6701", "shape": "dot", "size": 10, "title": "MATH 6701 - Math Meth-Appli Sci I"}, {"color": "#97c2fc", "id": "7586", "label": "7586", "shape": "dot", "size": 10, "title": "MATH 7586 - Tensor Analysis"}, {"color": "#97c2fc", "id": 6121, "label": 6121, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6122", "label": "6122", "shape": "dot", "size": 10, "title": "MATH 6122 - Algebra II"}, {"color": "#97c2fc", "id": "6421", "label": "6421", "shape": "dot", "size": 10, "title": "MATH 6421 - Algebraic Geometry I"}, {"color": "#97c2fc", "id": 6759, "label": 6759, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6235", "label": "6235", "shape": "dot", "size": 10, "title": "MATH 6235 - Stoch Process-Finance II"}, {"color": "#97c2fc", "id": 6337, "label": 6337, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6241", "label": "6241", "shape": "dot", "size": 10, "title": "MATH 6241 - Probability I"}, {"color": "#97c2fc", "id": "6579", "label": "6579", "shape": "dot", "size": 10, "title": "MATH 6579 - Measure Th for Engineers"}, {"color": "#97c2fc", "id": "7337", "label": "7337", "shape": "dot", "size": 10, "title": "MATH 7337 - Harmonic Analysis"}, {"color": "#97c2fc", "id": 6241, "label": 6241, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6242", "label": "6242", "shape": "dot", "size": 10, "title": "MATH 6242 - Probability II"}, {"color": "#97c2fc", "id": 4262, "label": 4262, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6262", "label": "6262", "shape": "dot", "size": 10, "title": "MATH 6262 - Statistical Estimation"}, {"color": "#97c2fc", "id": "6263", "label": "6263", "shape": "dot", "size": 10, "title": "MATH 6263 - Testing Stat Hypotheses"}, {"color": "#97c2fc", "id": "6267", "label": "6267", "shape": "dot", "size": 10, "title": "MATH 6267 - Multivariate Stat Analy"}, {"color": "#97c2fc", "id": 3225, "label": 3225, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6266", "label": "6266", "shape": "dot", "size": 10, "title": "MATH 6266 - Linear Statistical Model"}, {"color": "#97c2fc", "id": "6635", "label": "6635", "shape": "dot", "size": 10, "title": "MATH 6635 - Numerical Meth-Finance"}, {"color": "#97c2fc", "id": "6759", "label": "6759", "shape": "dot", "size": 10, "title": "MATH 6759 - Stoch Process-Finance I"}, {"color": "#97c2fc", "id": "6761", "label": "6761", "shape": "dot", "size": 10, "title": "MATH 6761 - Stochastic Processes I"}, {"color": "#97c2fc", "id": "6769", "label": "6769", "shape": "dot", "size": 10, "title": "MATH 6769 - Fixed Income Securities"}, {"color": "#97c2fc", "id": "6783", "label": "6783", "shape": "dot", "size": 10, "title": "MATH 6783 - Financial Data Analysis"}, {"color": "#97c2fc", "id": 4542, "label": 4542, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6307", "label": "6307", "shape": "dot", "size": 10, "title": "MATH 6307 - Ordinary Diff Eqns I"}, {"color": "#97c2fc", "id": 6307, "label": 6307, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6308", "label": "6308", "shape": "dot", "size": 10, "title": "MATH 6308 - Ordinary Diff Eqns II"}, {"color": "#97c2fc", "id": 4320, "label": 4320, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6321", "label": "6321", "shape": "dot", "size": 10, "title": "MATH 6321 - Complex Analysis"}, {"color": "#97c2fc", "id": "6584", "label": "6584", "shape": "dot", "size": 10, "title": "MATH 6584 - Special Functions"}, {"color": "#97c2fc", "id": 6579, "label": 6579, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6337", "label": "6337", "shape": "dot", "size": 10, "title": "MATH 6337 - Real Analysis I"}, {"color": "#97c2fc", "id": 6580, "label": 6580, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6338", "label": "6338", "shape": "dot", "size": 10, "title": "MATH 6338 - Real Analysis II"}, {"color": "#97c2fc", "id": 4318, "label": 4318, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6341", "label": "6341", "shape": "dot", "size": 10, "title": "MATH 6341 - Partial Diff Eqns I"}, {"color": "#97c2fc", "id": 6341, "label": 6341, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6342", "label": "6342", "shape": "dot", "size": 10, "title": "MATH 6342 - Partial Diff Eqns II"}, {"color": "#97c2fc", "id": 6421, "label": 6421, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6422", "label": "6422", "shape": "dot", "size": 10, "title": "MATH 6422 - Algebraic Geometry II"}, {"color": "#97c2fc", "id": 6451, "label": 6451, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6441", "label": "6441", "shape": "dot", "size": 10, "title": "MATH 6441 - Algebraic Topology I"}, {"color": "#97c2fc", "id": "6452", "label": "6452", "shape": "dot", "size": 10, "title": "MATH 6452 - Differential Topology"}, {"color": "#97c2fc", "id": 6441, "label": 6441, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6442", "label": "6442", "shape": "dot", "size": 10, "title": "MATH 6442 - Algebraic Topology II"}, {"color": "#97c2fc", "id": 4431, "label": 4431, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6451", "label": "6451", "shape": "dot", "size": 10, "title": "MATH 6451 - General Topology"}, {"color": "#97c2fc", "id": 6455, "label": 6455, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6453", "label": "6453", "shape": "dot", "size": 10, "title": "MATH 6453 - Geometric Topology"}, {"color": "#97c2fc", "id": "6456", "label": "6456", "shape": "dot", "size": 10, "title": "MATH 6456 - Differential Geometry II"}, {"color": "#97c2fc", "id": 4441, "label": 4441, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6455", "label": "6455", "shape": "dot", "size": 10, "title": "MATH 6455 - Differential Geometry I"}, {"color": "#97c2fc", "id": 6338, "label": 6338, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6580", "label": "6580", "shape": "dot", "size": 10, "title": "MATH 6580 - Hibert Spaces for Sci/Engr"}, {"color": "#97c2fc", "id": "7338", "label": "7338", "shape": "dot", "size": 10, "title": "MATH 7338 - Functional Analysis"}, {"color": "#97c2fc", "id": 6701, "label": 6701, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6583", "label": "6583", "shape": "dot", "size": 10, "title": "MATH 6583 - Integral Eqns\u0026Transforms"}, {"color": "#97c2fc", "id": "6702", "label": "6702", "shape": "dot", "size": 10, "title": "MATH 6702 - Math Meth-Appl Sci II"}, {"color": "#97c2fc", "id": 6643, "label": 6643, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6641", "label": "6641", "shape": "dot", "size": 10, "title": "MATH 6641 - Adv Num Meth-Pt Diff Eqn"}, {"color": "#97c2fc", "id": "6644", "label": "6644", "shape": "dot", "size": 10, "title": "MATH 6644 - Iterative Meth-Sys Eqns"}, {"color": "#97c2fc", "id": 4641, "label": 4641, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6647", "label": "6647", "shape": "dot", "size": 10, "title": "MATH 6647 - Numeric Meth:Dynamic Sys"}, {"color": "#97c2fc", "id": 6761, "label": 6761, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6762", "label": "6762", "shape": "dot", "size": 10, "title": "MATH 6762 - Stochastic Processes II"}, {"color": "#97c2fc", "id": 4032, "label": 4032, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "7012", "label": "7012", "shape": "dot", "size": 10, "title": "MATH 7012 - Enumerative Combinatoric"}, {"color": "#97c2fc", "id": 6014, "label": 6014, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "7014", "label": "7014", "shape": "dot", "size": 10, "title": "MATH 7014 - Advanced Graph Theory"}, {"color": "#97c2fc", "id": 6221, "label": 6221, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "7018", "label": "7018", "shape": "dot", "size": 10, "title": "MATH 7018 - Probab Combinatorics"}, {"color": "#97c2fc", "id": 6242, "label": 6242, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "7244", "label": "7244", "shape": "dot", "size": 10, "title": "MATH 7244 - Stochastic Calculus I"}, {"color": "#97c2fc", "id": 7244, "label": 7244, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "7245", "label": "7245", "shape": "dot", "size": 10, "title": "MATH 7245 - Stochastic Calculus II"}, {"color": "#97c2fc", "id": 8305, "label": 8305, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "8306", "label": "8306", "shape": "dot", "size": 10, "title": "MATH 8306 - Intermed Academic Commun"}, {"color": "#97c2fc", "id": "8307", "label": "8307", "shape": "dot", "size": 10, "title": "MATH 8307 - Advanced Academic Commun"}, {"color": "#97c2fc", "id": "1111", "label": "1111", "shape": "dot", "size": 10, "title": "MATH 1111 - College Algebra"}, {"color": "#97c2fc", "id": "1803", "label": "1803", "shape": "dot", "size": 10, "title": "MATH 1803 - Special Topics"}, {"color": "#97c2fc", "id": "2801", "label": "2801", "shape": "dot", "size": 10, "title": "MATH 2801 - Special Topics"}, {"color": "#97c2fc", "id": "2802", "label": "2802", "shape": "dot", "size": 10, "title": "MATH 2802 - Special Topics"}, {"color": "#97c2fc", "id": "2803", "label": "2803", "shape": "dot", "size": 10, "title": "MATH 2803 - Special Topics"}, {"color": "#97c2fc", "id": "2804", "label": "2804", "shape": "dot", "size": 10, "title": "MATH 2804 - Special Topics"}, {"color": "#97c2fc", "id": "2805", "label": "2805", "shape": "dot", "size": 10, "title": "MATH 2805 - Special Topics"}, {"color": "#97c2fc", "id": "3801", "label": "3801", "shape": "dot", "size": 10, "title": "MATH 3801 - Special Topics"}, {"color": "#97c2fc", "id": "3802", "label": "3802", "shape": "dot", "size": 10, "title": "MATH 3802 - Special Topics"}, {"color": "#97c2fc", "id": "3803", "label": "3803", "shape": "dot", "size": 10, "title": "MATH 3803 - Special Topics"}, {"color": "#97c2fc", "id": "3804", "label": "3804", "shape": "dot", "size": 10, "title": "MATH 3804 - Special Topics"}, {"color": "#97c2fc", "id": "3805", "label": "3805", "shape": "dot", "size": 10, "title": "MATH 3805 - Special Topics"}, {"color": "#97c2fc", "id": "4080", "label": "4080", "shape": "dot", "size": 10, "title": "MATH 4080 - Senior Project I"}, {"color": "#97c2fc", "id": "4090", "label": "4090", "shape": "dot", "size": 10, "title": "MATH 4090 - Senior Project II"}, {"color": "#97c2fc", "id": "4801", "label": "4801", "shape": "dot", "size": 10, "title": "MATH 4801 - Special Topics"}, {"color": "#97c2fc", "id": "4802", "label": "4802", "shape": "dot", "size": 10, "title": "MATH 4802 - Special Topics"}, {"color": "#97c2fc", "id": "4803", "label": "4803", "shape": "dot", "size": 10, "title": "MATH 4803 - Special Topics"}, {"color": "#97c2fc", "id": "4804", "label": "4804", "shape": "dot", "size": 10, "title": "MATH 4804 - Special Topics"}, {"color": "#97c2fc", "id": "4805", "label": "4805", "shape": "dot", "size": 10, "title": "MATH 4805 - Special Topics"}, {"color": "#97c2fc", "id": "4873", "label": "4873", "shape": "dot", "size": 10, "title": "MATH 4873 - Special Topics"}, {"color": "#97c2fc", "id": "6001", "label": "6001", "shape": "dot", "size": 10, "title": "MATH 6001 - Intro to Graduate Math"}, {"color": "#97c2fc", "id": "6767", "label": "6767", "shape": "dot", "size": 10, "title": "MATH 6767 - Sys-Computation Finance"}, {"color": "#97c2fc", "id": "6785", "label": "6785", "shape": "dot", "size": 10, "title": "MATH 6785 - The Practice of QCF"}, {"color": "#97c2fc", "id": "6793", "label": "6793", "shape": "dot", "size": 10, "title": "MATH 6793 - Adv Topics in QCF"}, {"color": "#97c2fc", "id": "7251", "label": "7251", "shape": "dot", "size": 10, "title": "MATH 7251 - High-Dim Probability"}, {"color": "#97c2fc", "id": "7252", "label": "7252", "shape": "dot", "size": 10, "title": "MATH 7252 - High-Dim Statistics"}, {"color": "#97c2fc", "id": "7339", "label": "7339", "shape": "dot", "size": 10, "title": "MATH 7339 - Advanced Analysis"}, {"color": "#97c2fc", "id": "7510", "label": "7510", "shape": "dot", "size": 10, "title": "MATH 7510 - Graph Algorithms"}, {"color": "#97c2fc", "id": "8305", "label": "8305", "shape": "dot", "size": 10, "title": "MATH 8305 - Aural-Oral Engl for Math"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": 1113, "to": "0399", "width": 1}, {"arrows": "to", "from": 1113, "to": "1501", "width": 1}, {"arrows": "to", "from": 1113, "to": "1711", "width": 1}, {"arrows": "to", "from": 1113, "to": "1712", "width": 1}, {"arrows": "to", "from": 1111, "to": "0999", "width": 1}, {"arrows": "to", "from": 1111, "to": "1113", "width": 1}, {"arrows": "to", "from": 1501, "to": "1503", "width": 1}, {"arrows": "to", "from": 1501, "to": "1512", "width": 1}, {"arrows": "to", "from": 1501, "to": "1601", "width": 1}, {"arrows": "to", "from": 1503, "to": "1504", "width": 1}, {"arrows": "to", "from": 1551, "to": "1550", "width": 1}, {"arrows": "to", "from": 1550, "to": "1551", "width": 1}, {"arrows": "to", "from": 1555, "to": "1552", "width": 1}, {"arrows": "to", "from": 1555, "to": "2603", "width": 1}, {"arrows": "to", "from": 1555, "to": "4755", "width": 1}, {"arrows": "to", "from": 1564, "to": "1553", "width": 1}, {"arrows": "to", "from": 1564, "to": "2106", "width": 1}, {"arrows": "to", "from": 1564, "to": "2605", "width": 1}, {"arrows": "to", "from": 1564, "to": "3012", "width": 1}, {"arrows": "to", "from": 1564, "to": "3406", "width": 1}, {"arrows": "to", "from": 1564, "to": "4012", "width": 1}, {"arrows": "to", "from": 1564, "to": "4305", "width": 1}, {"arrows": "to", "from": 1564, "to": "4777", "width": 1}, {"arrows": "to", "from": 1552, "to": "1554", "width": 1}, {"arrows": "to", "from": 2550, "to": "1555", "width": 1}, {"arrows": "to", "from": 1554, "to": "1564", "width": 1}, {"arrows": "to", "from": 1512, "to": "2406", "width": 1}, {"arrows": "to", "from": 1512, "to": "4580", "width": 1}, {"arrows": "to", "from": 1512, "to": "6705", "width": 1}, {"arrows": "to", "from": 2605, "to": "2550", "width": 1}, {"arrows": "to", "from": 2605, "to": "3215", "width": 1}, {"arrows": "to", "from": 2605, "to": "3670", "width": 1}, {"arrows": "to", "from": 2605, "to": "4320", "width": 1}, {"arrows": "to", "from": 2605, "to": "4441", "width": 1}, {"arrows": "to", "from": 2605, "to": "4581", "width": 1}, {"arrows": "to", "from": 2605, "to": "4640", "width": 1}, {"arrows": "to", "from": 2605, "to": "4782", "width": 1}, {"arrows": "to", "from": 2605, "to": "6710", "width": 1}, {"arrows": "to", "from": 2605, "to": "6711", "width": 1}, {"arrows": "to", "from": 2561, "to": "2551", "width": 1}, {"arrows": "to", "from": 2562, "to": "2552", "width": 1}, {"arrows": "to", "from": 2562, "to": "4347", "width": 1}, {"arrows": "to", "from": 2562, "to": "4541", "width": 1}, {"arrows": "to", "from": 2551, "to": "2561", "width": 1}, {"arrows": "to", "from": 2552, "to": "2562", "width": 1}, {"arrows": "to", "from": 3012, "to": "3022", "width": 1}, {"arrows": "to", "from": 3215, "to": "3225", "width": 1}, {"arrows": "to", "from": 3215, "to": "3235", "width": 1}, {"arrows": "to", "from": 3235, "to": "3236", "width": 1}, {"arrows": "to", "from": 3022, "to": "4022", "width": 1}, {"arrows": "to", "from": 3022, "to": "4032", "width": 1}, {"arrows": "to", "from": 2106, "to": "4107", "width": 1}, {"arrows": "to", "from": 2106, "to": "4317", "width": 1}, {"arrows": "to", "from": 4107, "to": "4108", "width": 1}, {"arrows": "to", "from": 2406, "to": "4150", "width": 1}, {"arrows": "to", "from": 3670, "to": "4210", "width": 1}, {"arrows": "to", "from": 3670, "to": "4221", "width": 1}, {"arrows": "to", "from": 3670, "to": "4255", "width": 1}, {"arrows": "to", "from": 3670, "to": "4261", "width": 1}, {"arrows": "to", "from": 3670, "to": "4280", "width": 1}, {"arrows": "to", "from": 4221, "to": "4222", "width": 1}, {"arrows": "to", "from": 4221, "to": "6221", "width": 1}, {"arrows": "to", "from": 4261, "to": "4262", "width": 1}, {"arrows": "to", "from": 4317, "to": "4318", "width": 1}, {"arrows": "to", "from": 4317, "to": "4431", "width": 1}, {"arrows": "to", "from": 4317, "to": "4432", "width": 1}, {"arrows": "to", "from": 4317, "to": "6021", "width": 1}, {"arrows": "to", "from": 4317, "to": "7581", "width": 1}, {"arrows": "to", "from": 4347, "to": "4348", "width": 1}, {"arrows": "to", "from": 4541, "to": "4542", "width": 1}, {"arrows": "to", "from": 4640, "to": "4641", "width": 1}, {"arrows": "to", "from": 4640, "to": "6514", "width": 1}, {"arrows": "to", "from": 4640, "to": "6640", "width": 1}, {"arrows": "to", "from": 4640, "to": "6645", "width": 1}, {"arrows": "to", "from": 4640, "to": "6646", "width": 1}, {"arrows": "to", "from": 4022, "to": "6014", "width": 1}, {"arrows": "to", "from": 4022, "to": "7016", "width": 1}, {"arrows": "to", "from": 4305, "to": "6112", "width": 1}, {"arrows": "to", "from": 4305, "to": "6121", "width": 1}, {"arrows": "to", "from": 4305, "to": "6643", "width": 1}, {"arrows": "to", "from": 4305, "to": "6701", "width": 1}, {"arrows": "to", "from": 4305, "to": "7586", "width": 1}, {"arrows": "to", "from": 6121, "to": "6122", "width": 1}, {"arrows": "to", "from": 6121, "to": "6421", "width": 1}, {"arrows": "to", "from": 6759, "to": "6235", "width": 1}, {"arrows": "to", "from": 6337, "to": "6241", "width": 1}, {"arrows": "to", "from": 6337, "to": "6579", "width": 1}, {"arrows": "to", "from": 6337, "to": "7337", "width": 1}, {"arrows": "to", "from": 6241, "to": "6242", "width": 1}, {"arrows": "to", "from": 4262, "to": "6262", "width": 1}, {"arrows": "to", "from": 4262, "to": "6263", "width": 1}, {"arrows": "to", "from": 4262, "to": "6267", "width": 1}, {"arrows": "to", "from": 3225, "to": "6266", "width": 1}, {"arrows": "to", "from": 3225, "to": "6635", "width": 1}, {"arrows": "to", "from": 3225, "to": "6759", "width": 1}, {"arrows": "to", "from": 3225, "to": "6761", "width": 1}, {"arrows": "to", "from": 3225, "to": "6769", "width": 1}, {"arrows": "to", "from": 3225, "to": "6783", "width": 1}, {"arrows": "to", "from": 4542, "to": "6307", "width": 1}, {"arrows": "to", "from": 6307, "to": "6308", "width": 1}, {"arrows": "to", "from": 4320, "to": "6321", "width": 1}, {"arrows": "to", "from": 4320, "to": "6584", "width": 1}, {"arrows": "to", "from": 6579, "to": "6337", "width": 1}, {"arrows": "to", "from": 6580, "to": "6338", "width": 1}, {"arrows": "to", "from": 4318, "to": "6341", "width": 1}, {"arrows": "to", "from": 6341, "to": "6342", "width": 1}, {"arrows": "to", "from": 6421, "to": "6422", "width": 1}, {"arrows": "to", "from": 6451, "to": "6441", "width": 1}, {"arrows": "to", "from": 6451, "to": "6452", "width": 1}, {"arrows": "to", "from": 6441, "to": "6442", "width": 1}, {"arrows": "to", "from": 4431, "to": "6451", "width": 1}, {"arrows": "to", "from": 6455, "to": "6453", "width": 1}, {"arrows": "to", "from": 6455, "to": "6456", "width": 1}, {"arrows": "to", "from": 4441, "to": "6455", "width": 1}, {"arrows": "to", "from": 6338, "to": "6580", "width": 1}, {"arrows": "to", "from": 6338, "to": "7338", "width": 1}, {"arrows": "to", "from": 6701, "to": "6583", "width": 1}, {"arrows": "to", "from": 6701, "to": "6702", "width": 1}, {"arrows": "to", "from": 6643, "to": "6641", "width": 1}, {"arrows": "to", "from": 6643, "to": "6644", "width": 1}, {"arrows": "to", "from": 4641, "to": "6647", "width": 1}, {"arrows": "to", "from": 6761, "to": "6762", "width": 1}, {"arrows": "to", "from": 4032, "to": "7012", "width": 1}, {"arrows": "to", "from": 6014, "to": "7014", "width": 1}, {"arrows": "to", "from": 6221, "to": "7018", "width": 1}, {"arrows": "to", "from": 6242, "to": "7244", "width": 1}, {"arrows": "to", "from": 7244, "to": "7245", "width": 1}, {"arrows": "to", "from": 8305, "to": "8306", "width": 1}, {"arrows": "to", "from": 8305, "to": "8307", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
