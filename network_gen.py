@@ -4,8 +4,8 @@ from pyvis.network import Network
 import ast
 
 # Read the data
+# df = pd.read_csv('gt_math_courses.csv')
 df = pd.read_csv('gt_math_courses.csv')
-
 # Filter out special topics courses
 df = df[~df['title'].str.contains('Special Topics', case=False, na=False)]
 
@@ -48,6 +48,7 @@ for index, row in df.iterrows():
     prereqs = ast.literal_eval(row['prerequisites'])
     max_prereq = None
     max_prereq_num = -1
+    alternate_prereq = -1
     
     for prereq in prereqs:
         prereq_num = prereq.split(' ')[1]
@@ -58,11 +59,15 @@ for index, row in df.iterrows():
                 if prereq_int > max_prereq_num and prereq_int < int(row['number']):
                     max_prereq_num = prereq_int
                     max_prereq = prereq_num
+                elif prereq_int > alternate_prereq:
+                    alternate_prereq = prereq_int
             except ValueError:
                 continue
     
     if max_prereq:
         edges.append((max_prereq, row['number']))
+    elif alternate_prereq != -1:
+        edges.append((alternate_prereq, row['number']))
 
 # Add edges to graph
 net.add_edges_from(edges)
@@ -96,4 +101,4 @@ nt.set_options("""
 nt.from_nx(net)
 
 # Save the interactive visualization
-nt.save_graph('course_prerequisites.html')
+nt.save_graph('network_math.html')
