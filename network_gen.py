@@ -4,20 +4,22 @@ from pyvis.network import Network
 import ast
 import textwrap
 
-def format_text_with_breaks(text, width=80):
+def format_text_with_breaks(text, width=100):
     if not pd.notna(text):
         return ""
     
     formatted = "" + str(text) if text else ""
-    formatted = formatted.replace('\n', '<br/>')
+    formatted = formatted.replace('\n', ' ')
     
     # Use textwrap to split at word boundaries
-    lines = textwrap.wrap(formatted, width=width, break_long_words=False)
+    lines = textwrap.wrap(formatted, width=width, break_long_words=True)
+    # lines = textwrap.fill(formatted, width=width).split('\n')
+    
     return '<br/>'.join(lines)
   
 # Read the data
 # df = pd.read_csv('gt_math_courses.csv')
-df = pd.read_csv('gt_math_courses.csv')
+df = pd.read_csv('gt_math_courses_edited.csv')
 # Filter out special topics courses
 df = df[~df['title'].str.contains('Special Topics', case=False, na=False)]
 
@@ -43,7 +45,6 @@ df['class_name'] = df['title'].str.split('-').str[1]
 
 # Create directed graph
 net = nx.DiGraph()
-
 # Add nodes with only title as label, colored by first digit
 for index, row in df.iterrows():
     first_digit = row['number'][0] if row['number'] else None
@@ -51,17 +52,20 @@ for index, row in df.iterrows():
     
     # Format description with line breaks using HTML line breaks
     desc = row['description']
-    formatted_desc = desc.replace('\n', '<br/>')
-    
+    formatted_desc = desc.replace('\n', ' ')
     
     # Get prerequisites and format them
     prereqs = ast.literal_eval(row['prerequisites'])
-    prereq_text = "<br/><br/>" + str(row['prereq_text']).replace('\n', '<br/>') if row['prereq_text'] else ""
+    prereq_text = "<br/><br/> Prerequisites: " + str(row['prereq_text']).replace('\n', ' ') if row['prereq_text'] else ""
+    
+    # Clean up professors and terms strings by removing all line breaks and extra whitespace
+    prof_and_terms = "<br/> <br/> Professors: " + ' '.join(str(row['professors_str']).replace('\n', ' ').split()) + "<br/> Last taught in: " + ' '.join(str(row['terms_str']).replace('\n', ' ').replace('<br/>', ' ').split())
     
     # Split text into chunks of 80 chars and join with <br/>
     desc_with_breaks = format_text_with_breaks(formatted_desc)
     prereq_with_breaks = format_text_with_breaks(prereq_text)
-    full_text = f"<div>{desc_with_breaks}{prereq_with_breaks}</div>"
+    prof_and_terms_with_breaks = format_text_with_breaks(prof_and_terms)
+    full_text = f"<div>{desc_with_breaks}{prereq_with_breaks}{prof_and_terms_with_breaks}</div>"
     
     print(full_text)
 
