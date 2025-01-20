@@ -40,16 +40,24 @@ def scrape_course(subj_code, course_num, term="202502"):
         prereq_text = None
         content_element = None
         prerequisites = "No prerequisites found"
-        
         if desc_element:
             description = desc_element.get_text().split('\n')[1].strip()
-            
+                    
             # Find prerequisites section
             prereq_section = desc_element.find(text=re.compile('Prerequisites:'))
             if prereq_section:
-                next_element = prereq_section.find_next('br')
-                if next_element and next_element.next_sibling:
-                    prereq_text = next_element.next_sibling.strip()
+                # Get all text after "Prerequisites:"
+                full_text = desc_element.get_text()
+                prereq_start = full_text.find('Prerequisites:')
+                if prereq_start != -1:
+                    prereq_text = full_text[prereq_start + len('Prerequisites:'):].strip()
+                
+                prereq_text = re.sub(r'Undergraduate Semester level\s+(?=[A-Z]{2,4}\s*\d)', '', 
+                                     prereq_text, flags=re.IGNORECASE).strip()
+                prereq_text = re.sub(r'Graduate Semester level\s+(?=[A-Z]{2,4}\s*\d)', '', 
+                                     prereq_text, flags=re.IGNORECASE).strip()
+                prereq_text = re.sub(r'Minimum Grade of [SDTABC]', '', prereq_text, flags=re.IGNORECASE).strip()
+                prereq_text = re.sub(r'\s+', ' ', prereq_text).strip()
         
         content_element = soup.find('td', class_='ntdefault')
         if content_element:
@@ -78,7 +86,8 @@ def scrape_course(subj_code, course_num, term="202502"):
         return {
             "title": title,
             "description": description,
-            "prerequisites": prerequisites
+            "prerequisites": prerequisites,
+            "prereq_text": prereq_text
         }
         
     except requests.RequestException as e:
@@ -98,7 +107,7 @@ def get_all_math_courses():
     for x in cs_list:
         # tmp_df = tmp_df.append(scrape_course('MATH', x), ignore_index=True)
         z = scrape_course('CS', x)
-        print(z)
+        print(f"Scraping course {x}")
         tmp_df = pd.concat([tmp_df, pd.DataFrame([z])])
 
     tmp_df.to_csv('gt_cs_courses.csv', index=False)

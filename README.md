@@ -1,6 +1,6 @@
 # Class Viz
 
-Visualization of GT's prerequisite chains. Prerequisites for a class can get a little messy, so we just take the highest prerequisite. 
+Visualization of GT's prerequisite chains. Basically, for every class, we draw a directed edge from its highest prerequisite in the same department. 
 
 - [Live Math Visualization](https://echen333.github.io/class_viz/network_math.html)
 - [Live CS Visualization](https://echen333.github.io/class_viz/network_cs.html)
@@ -8,8 +8,8 @@ Visualization of GT's prerequisite chains. Prerequisites for a class can get a l
 ## Requirements
 
 - Python 3.10+
-- pip install pandas, networkx, pyvis
 
 ```bash
-python3 network_gen.py
+pip install pandas, networkx, pyvis
+python3 network_gen.py && python3 inject.py network_math.html network_math.html
 ```
