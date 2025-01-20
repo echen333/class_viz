@@ -1,6 +1,8 @@
 # Class Viz
 
-Visualization of GT's prerequisite chains. Basically, for every class, we draw a directed edge from its highest prerequisite in the same department. 
+Visualization of GT's prerequisite chains. Basically, for every class, we draw a directed edge from its highest prerequisite in the same department.
+
+Note: This simplified view can be misleading in cases where multiple different courses could satisfy a single prerequisite requirement.
 
 - [Live Math Visualization](https://echen333.github.io/class_viz/network_math.html)
 - [Live CS Visualization](https://echen333.github.io/class_viz/network_cs.html)
