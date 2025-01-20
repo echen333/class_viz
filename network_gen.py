@@ -51,21 +51,23 @@ for index, row in df.iterrows():
     color = color_map.get(first_digit, '#CCCCCC')  # Default gray if no matching first digit
     
     # Format description with line breaks using HTML line breaks
-    desc = row['description']
+    title = f"<h3>{row['title']}</h3><br/>"
+    desc = row['description'] 
     formatted_desc = desc.replace('\n', ' ')
     
     # Get prerequisites and format them
     prereqs = ast.literal_eval(row['prerequisites'])
-    prereq_text = "<br/><br/> Prerequisites: " + str(row['prereq_text']).replace('\n', ' ') if row['prereq_text'] else ""
+    prereq_text = "<br/><br/><b>Prerequisites:</b> " + str(row['prereq_text']).replace('\n', ' ') if row['prereq_text'] else ""
     
     # Clean up professors and terms strings by removing all line breaks and extra whitespace
-    prof_and_terms = "<br/> <br/> Professors: " + ' '.join(str(row['professors_str']).replace('\n', ' ').split()) + "<br/> Last taught in: " + ' '.join(str(row['terms_str']).replace('\n', ' ').replace('<br/>', ' ').split())
+    prof_and_terms = "<br/><br/><i>Professors:</i> " + ' '.join(str(row['professors_str']).replace('\n', ' ').split()) + "<br/><i>Last taught in:</i> " + ' '.join(str(row['terms_str']).replace('\n', ' ').replace('<br/>', ' ').split())
     
     # Split text into chunks of 80 chars and join with <br/>
+    title_with_breaks = format_text_with_breaks(title)
     desc_with_breaks = format_text_with_breaks(formatted_desc)
     prereq_with_breaks = format_text_with_breaks(prereq_text)
     prof_and_terms_with_breaks = format_text_with_breaks(prof_and_terms)
-    full_text = f"<div>{desc_with_breaks}{prereq_with_breaks}{prof_and_terms_with_breaks}</div>"
+    full_text = f"<div>{title_with_breaks}{desc_with_breaks}{prereq_with_breaks}{prof_and_terms_with_breaks}</div>"
     
     print(full_text)
 
