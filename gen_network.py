@@ -32,7 +32,7 @@ df2 = pd.read_csv(file_path2)
 less_prio_numbers = []
 if file_path.lower().find('math') != -1:
   print("Adding less priority to 3215 and 3670 and 2605")
-  less_prio_numbers = ['3215', '3670', '2605','2603']
+  less_prio_numbers = ['3215', '3670', '2605','2603', '6221']
   print("Removing 2406")
   df = df[~df['title'].str.contains('2406', case=False, na=False)]
   
@@ -137,7 +137,7 @@ for index, row in df.iterrows():
     prereqs = ast.literal_eval(row['must_have_prereqs'])
     max_prereq, alternate_prereq = get_prereq_edge(prereqs, row['number'], numbers_list)
     
-    print(row['number'], row['must_have_prereqs'], row['optional_prereqs'])
+    print(row['number'], row['must_have_prereqs'], row['optional_prereqs'], max_prereq, alternate_prereq)
     if max_prereq:
         edges.append((max_prereq, row['number']))
         continue
