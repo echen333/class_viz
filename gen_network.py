@@ -15,7 +15,8 @@ def format_text_with_breaks(text, width=100):
     lines = textwrap.wrap(formatted, width=width, break_long_words=True)
     # lines = textwrap.fill(formatted, width=width).split('\n')
     
-    return '<br/>'.join(lines)
+    # return '<br/>'.join(lines)
+    return text
   
 # Read the data
 # df = pd.read_csv('gt_math_courses.csv')
@@ -40,7 +41,8 @@ if file_path.lower().find('math') != -1:
 df['number'] = df['title'].str.extract(r'(\d+)')
 title_mapping = df.set_index('number')['title'].to_dict()
 numbers_list = df['number'].unique()
-  
+
+df['course_name'] = df['title'].apply(lambda x: x[x.find('-')+1:].strip() if x.find('-') != -1 else x)
 # Define color mapping based on first digit
 color_map = {
     '0': '#FFD700', # gold
@@ -54,7 +56,7 @@ color_map = {
     '8': '#FFFFE0',
 }
 
-df['class_name'] = df['title'].str.split('-').str[1]
+# df['class_name'] = df['title'].str[df['title'].str.find('-')+1:]
 
 # Create directed graph
 net = nx.DiGraph()
@@ -92,7 +94,7 @@ for index, row in df.iterrows():
     net.add_node(row['number'],
                 # title=full_text,  # Show description and prerequisites on hover
                 desc=full_text,
-                label=row['title'],  # Only show title, not number
+                label=row['course_name'],  # Only show title, not number
                 color=color)
 
 def get_prereq_edge(prereqs, course_number, numbers_list):

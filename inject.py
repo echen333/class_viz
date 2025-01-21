@@ -23,8 +23,44 @@ def main():
     new_options = (
         'var options = {"physics": {"forceAtlas2Based": {"gravitationalConstant": -100, '
         '"springLength": 200}, "minVelocity": 0.75, "solver": "forceAtlas2Based"}, '
-        '"nodes": {"font": {"size": 14}}, "interaction": {"hover": true, "tooltipDelay": 50}};'
+        '"nodes": {"font": {"size": 25}}, "interaction": {"hover": true, "tooltipDelay": 50}};'
     )
+    # TODO: Should just calculate topological order myself
+#     new_options = '''var options = {
+#     "physics": {
+#         "enabled": true,
+#         "barnesHut": {
+#             "gravitationalConstant": -2000,
+#             "centralGravity": 0.3,
+#             "springLength": 230,
+#             "springConstant": 0.04,
+#             "damping": 0.09,
+#             "avoidOverlap": 1
+#         },
+#         "minVelocity": 0.75,
+#         "solver": "barnesHut",
+#         "stabilization": {
+#             "iterations": 4000
+#         }
+#     },
+#     "nodes": {
+#         "font": {"size": 14},
+#         "scaling": {
+#             "min": 10,
+#             "max": 30,
+#             "label": {
+#                 "enabled": true,
+#                 "min": 14,
+#                 "max": 14
+#             }
+#         },
+#         "margin": 30
+#     },
+#     "interaction": {
+#         "hover": true,
+#         "tooltipDelay": 50
+#     }
+# };'''
     content = content.replace(old_options, new_options)
 
     # 2) Snippet to insert after "drawGraph();"
@@ -48,7 +84,13 @@ tooltip.style.backgroundColor = '#f8f8f8';
 tooltip.style.fontFamily = 'sans-serif';
 tooltip.style.fontSize = '14px';
 tooltip.style.zIndex = '99999';
+tooltip.style.maxWidth = Math.min(window.innerWidth * 0.4, 500) + 'px'; // 40% of viewport width, max 500px
 document.body.appendChild(tooltip);
+
+// Update tooltip max width on window resize
+window.addEventListener('resize', function() {
+    tooltip.style.maxWidth = Math.min(window.innerWidth * 0.4, 500) + 'px';
+});
 
 network.on("hoverNode", function (params) {
     var nodeId = params.node;
