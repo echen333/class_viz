@@ -32,7 +32,9 @@ def syntactic_join(lst):
         return str(lst[0])
     return ", ".join(str(item) for item in lst[:-1]) + ", and " + str(lst[-1])
 
-math_courses_df = pd.read_csv('gt_math_courses.csv')
+in_file_path = 'data2/gt_math_courses.csv'
+out_file_path = 'data2/gt_math_courses.csv'
+math_courses_df = pd.read_csv(in_file_path)
 math_courses_df['course_code'] = math_courses_df['title'].str.split('-').str[0].str.strip()
 math_courses_df['terms'] = math_courses_df['course_code'].apply(lambda x: all_df[all_df['course_code'] == x].sort_values(['year', 'term'])['term_year'].unique()[-5:][::-1])
 math_courses_df['professors'] = math_courses_df['course_code'].apply(lambda x: all_df[all_df['course_code'] == x].sort_values(['year', 'term'])['instructor'].apply(lambda y: y.split(',')[0].strip() if pd.notna(y) else '').unique()[-5:][::-1])
@@ -48,4 +50,4 @@ math_courses_df['terms_str'] = math_courses_df['terms_str'].str.replace('\n', ' 
 print(repr(math_courses_df[math_courses_df['course_code'] == 'MATH 2550']['professors_str'].iloc[0]))
 print(math_courses_df[math_courses_df['course_code'] == 'MATH 2550']['professors_str'].iloc[0])
 
-math_courses_df.to_csv('gt_math_courses_edited.csv', index=False)
+math_courses_df.to_csv(out_file_path, index=False)

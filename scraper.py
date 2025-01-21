@@ -6,6 +6,73 @@ import pandas as pd
 import logging
 
 logging.basicConfig(level=logging.INFO)
+
+def extract_prerequisites(text: str) -> tuple[list[str], list[str]]:
+    """
+    Extract prerequisites from course text, separating must-have and optional prerequisites.
+    Returns (must_have_prerequisites, optional_prerequisites)
+    
+    Handles complex cases like:
+    - "MATH 4107 and one of MATH 2406, MATH 4305, or permission of instructor"
+    - "MATH 3012 or MATH 3022 and MATH 2106"
+    - Multiple AND/OR combinations
+    """
+    if not text:
+        return [], []
+    
+    # Regular expression to find course numbers with department
+    course_pattern = r'([A-Z]{2,4})\s*(\d{4})'
+    
+    # Initialize lists for both types of prerequisites
+    must_have_prereqs = []
+    optional_prereqs = []
+    
+    # First pass: Split by 'and' to separate mandatory parts
+    and_parts = [part.strip() for part in text.split(' and ')]
+    
+    for part in and_parts:
+        part_lower = part.lower()
+        
+        # Check for "one of" pattern first
+        if 'one of' in part_lower:
+            # Everything after "one of" is optional
+            one_of_idx = part_lower.find('one of')
+            before_one_of = part[:one_of_idx].strip()
+            after_one_of = part[one_of_idx + 7:].strip()
+            
+            # Check for any must-have prerequisites before "one of"
+            if before_one_of:
+                matches = re.finditer(course_pattern, before_one_of)
+                for match in matches:
+                    course = f"{match.group(1)} {match.group(2)}"
+                    if course not in must_have_prereqs:
+                        must_have_prereqs.append(course)
+            
+            # Add all courses after "one of" as optional
+            matches = re.finditer(course_pattern, after_one_of)
+            for match in matches:
+                course = f"{match.group(1)} {match.group(2)}"
+                if course not in optional_prereqs and course not in must_have_prereqs:
+                    optional_prereqs.append(course)
+        
+        # Check for simple OR pattern
+        elif ' or ' in part_lower:
+            matches = re.finditer(course_pattern, part)
+            for match in matches:
+                course = f"{match.group(1)} {match.group(2)}"
+                if course not in optional_prereqs and course not in must_have_prereqs:
+                    optional_prereqs.append(course)
+        
+        # Must-have prerequisites (no OR/one of)
+        else:
+            matches = re.finditer(course_pattern, part)
+            for match in matches:
+                course = f"{match.group(1)} {match.group(2)}"
+                if course not in optional_prereqs and course not in must_have_prereqs:
+                    must_have_prereqs.append(course)
+    
+    return must_have_prereqs, optional_prereqs
+
 def scrape_course(subj_code, course_num, term="202502"):
     """
     Scrapes course information from Georgia Tech's course catalog
@@ -88,11 +155,14 @@ def scrape_course(subj_code, course_num, term="202502"):
                 
                 prerequisites = list(prereq_courses)
         
+        must_have_prereqs, optional_prereqs = extract_prerequisites(prereq_text)
         return {
             "title": title,
             "description": description,
             "prerequisites": prerequisites,
-            "prereq_text": prereq_text
+            "prereq_text": prereq_text,
+            "must_have_prereqs": must_have_prereqs,
+            "optional_prereqs": optional_prereqs
         }
         
     except requests.RequestException as e:
@@ -137,7 +207,7 @@ def get_all_math_courses():
     tmp_df['number'] = tmp_df['title'].str.extract('(\d+)').astype(int)
     tmp_df = tmp_df.sort_values('number').drop('number', axis=1)
     
-    tmp_df.to_csv(f'gt_{subject}_courses.csv', index=False)
+    tmp_df.to_csv(f'data2/gt_{subject}_courses.csv', index=False)
 
 # Example usage
 if __name__ == "__main__":

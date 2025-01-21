@@ -1,17 +1,17 @@
 # Class Viz
 
-Visualization of GT's prerequisite chains. Basically, for every class, we draw a directed edge from its highest prerequisite in the same department.
+Visualization of GT's prerequisite chains. On hover, nodes also show the course description, exact prerequisites, and past professors and terms taught.
 
-Note: This simplified view can be misleading in cases where multiple different courses could satisfy a single prerequisite requirement.
+Edges are drawn by taking the highest required prerequisites for each course. Note that some courses such as MATH 3215 and MATH 3670 have less priority if they are not for math majors.
 
 - [Live Math Visualization](https://echen333.github.io/class_viz/network_math.html)
 - [Live CS Visualization](https://echen333.github.io/class_viz/network_cs.html)
 
-The network is generated using pyvis in `gen_network.py`, which reads the CSV files and generates the HTML file. The HTML file is then injected with some data in `inject.py`.
+Note: the CS visualization is not as nice since most graduate classes don't have prerequisites listed.
 
-## Requirements
+The data is scraped from [OSCAR](https://oscar.gatech.edu/bprod/bwckschd.p_disp_dyn_sched) and GT's [Math website](https://www.math.gatech.edu) into a CSV file. The network is generated using pyvis in `gen_network.py`, which reads the CSV files and generates the HTML file. The HTML file is then slightly modified using `inject.py`.
 
-- Python 3.10+
+To compile it locally,
 
 ```bash
 pip install pandas, networkx, pyvis

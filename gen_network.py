@@ -19,20 +19,21 @@ def format_text_with_breaks(text, width=100):
   
 # Read the data
 # df = pd.read_csv('gt_math_courses.csv')
-file_path = 'gt_math_courses_edited.csv'
+file_path = 'data2/gt_math_courses.csv'
 df = pd.read_csv(file_path)
 # Filter out special topics courses
 df = df[~df['title'].str.contains('Special Topics', case=False, na=False)]
 df = df[~df['title'].str.contains('Honors', case=False, na=False)]
 
-file_path2 = 'gt_math_courses_20250121_034050.csv'
+file_path2 = 'data2/gt_math_courses_20250121_034050.csv'
 df2 = pd.read_csv(file_path2)
 
+less_prio_numbers = []
 if file_path.lower().find('math') != -1:
-  print("Removing 3215 and 3670")
-  # remove occurrences of 3215, 3670
-  df = df[~df['title'].str.contains('3215', case=False, na=False)]
-  df = df[~df['title'].str.contains('3670', case=False, na=False)]
+  print("Adding less priority to 3215 and 3670 and 2605")
+  less_prio_numbers = ['3215', '3670', '2605','2603']
+  print("Removing 2406")
+  df = df[~df['title'].str.contains('2406', case=False, na=False)]
   
   
 # Extract course numbers and create a mapping of numbers to full titles
@@ -75,7 +76,6 @@ for index, row in df.iterrows():
       # try getting from df2
       df2_row = df2[df2['course_number'] == int(row['number'])]
       if len(df2_row) > 0:
-        print("CHANGED", df2_row['prerequisites_text_raw'].values[0], row['number'])
         prereq_text = str(df2_row['prerequisites_text_raw'].values[0]).replace('\n', ' ') if df2_row['prerequisites_text_raw'].values[0] and not pd.isna(df2_row['prerequisites_text_raw'].values[0]) else "None"
     prereq_text = prereqs_prefix + prereq_text
     
@@ -116,7 +116,7 @@ def get_prereq_edge(prereqs, course_number, numbers_list):
         if prereq_num in numbers_list:  # Ensure prereq exists in our course list
             try:
                 prereq_int = int(prereq_num)
-                if prereq_int > max_prereq_num and prereq_int < int(course_number) and prereq_int != int(course_number):
+                if prereq_int > max_prereq_num and prereq_int < int(course_number) and prereq_int != int(course_number) and str(prereq_int) not in less_prio_numbers:
                     max_prereq_num = prereq_int
                     max_prereq = prereq_num
                 elif prereq_int > alternate_prereq and prereq_int != int(course_number):
@@ -131,37 +131,52 @@ def get_prereq_edge(prereqs, course_number, numbers_list):
 # Create edges using course numbers - only highest prerequisite
 edges = []
 for index, row in df.iterrows():
-    prereqs = ast.literal_eval(row['prerequisites'])
+    # First try must-have prerequisites
+    prereqs = ast.literal_eval(row['must_have_prereqs'])
     max_prereq, alternate_prereq = get_prereq_edge(prereqs, row['number'], numbers_list)
     
-    print(row['number'], row['prerequisites'], row['prereq_text'])
-    if not pd.isna(row['prereq_text']):
-      if max_prereq:
-          edges.append((max_prereq, row['number']))
-          continue
-      elif alternate_prereq != -1 and str(alternate_prereq) in numbers_list:
-          edges.append((str(alternate_prereq), row['number']))
-          continue
+    print(row['number'], row['must_have_prereqs'], row['optional_prereqs'])
+    if max_prereq:
+        edges.append((max_prereq, row['number']))
+        continue
+    elif alternate_prereq != -1 and str(alternate_prereq) in numbers_list:
+        edges.append((str(alternate_prereq), row['number']))
+        continue
+        
+    # If no must-have prereqs found, try optional prerequisites
+    prereqs = ast.literal_eval(row['optional_prereqs']) 
+    max_prereq, alternate_prereq = get_prereq_edge(prereqs, row['number'], numbers_list)
+    if max_prereq:
+        edges.append((max_prereq, row['number']))
+        continue
+    elif alternate_prereq != -1 and str(alternate_prereq) in numbers_list:
+        edges.append((str(alternate_prereq), row['number']))
+        continue
     
     # take edges from df2
-    df2_row = df2[df2['course_number'] == int(row['number'])]
-    print(row['number'], df2_row['must_have_prerequisites_array'], df2_row['optional_prerequisites_array'])
-    if len(df2_row) > 0:
-      prereqs = ast.literal_eval(df2_row['must_have_prerequisites_array'].values[0])
-      max_prereq, alternate_prereq = get_prereq_edge(prereqs, row['number'], numbers_list)
-      print("GOT",prereqs, row['number'], max_prereq, alternate_prereq)
-      if max_prereq:
-        edges.append((max_prereq, row['number']))
-      elif alternate_prereq != -1 and str(alternate_prereq) in numbers_list:
-        edges.append((str(alternate_prereq), row['number']))
-      else:
-        prereqs = ast.literal_eval(df2_row['optional_prerequisites_array'].values[0])
+    if file_path.lower().find('math') != -1:
+      df2_row = df2[df2['course_number'] == int(row['number'])]
+      print(row['number'], df2_row['must_have_prerequisites_array'], df2_row['optional_prerequisites_array'])
+      if len(df2_row) > 0:
+        prereqs = ast.literal_eval(df2_row['must_have_prerequisites_array'].values[0])
         max_prereq, alternate_prereq = get_prereq_edge(prereqs, row['number'], numbers_list)
-        print("GOT OPTIONAL",prereqs, row['number'], max_prereq, alternate_prereq)
+        print("GOT",prereqs, row['number'], max_prereq, alternate_prereq)
         if max_prereq:
           edges.append((max_prereq, row['number']))
+          continue
         elif alternate_prereq != -1 and str(alternate_prereq) in numbers_list:
           edges.append((str(alternate_prereq), row['number']))
+          continue
+        else:
+          prereqs = ast.literal_eval(df2_row['optional_prerequisites_array'].values[0])
+          max_prereq, alternate_prereq = get_prereq_edge(prereqs, row['number'], numbers_list)
+          print("GOT OPTIONAL",prereqs, row['number'], max_prereq, alternate_prereq)
+          if max_prereq:
+            edges.append((max_prereq, row['number']))
+            continue
+          elif alternate_prereq != -1 and str(alternate_prereq) in numbers_list:
+            edges.append((str(alternate_prereq), row['number']))
+            continue
 
 print("Edges:", edges)
 print("\nAll course numbers:", sorted(numbers_list))
