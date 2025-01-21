@@ -1,2 +1,4 @@
 data/
 dbg/
+__pycache__/
+lib/
