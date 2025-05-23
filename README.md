@@ -7,7 +7,6 @@ The data is scraped from [OSCAR](https://oscar.gatech.edu/bprod/bwckschd.p_disp_
 Edges are drawn by taking the highest required prerequisites for each course. Note that some courses such as MATH 3215 and MATH 3670 have less priority if they are not for math majors.
 
 - [Live Math Visualization](https://echen333.github.io/class_viz/network_math.html)
-- [Live CS Visualization](https://echen333.github.io/class_viz/network_cs.html)
 
 Also, the CS visualization is not as nice since most graduate classes don't have prerequisites listed.
 
